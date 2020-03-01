@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Speed2</string>
+    <string name="update_location">UPDATE LOCATION</string>
+    <string name="remove_updates">REMOVE UPDATES</string>
+</resources>

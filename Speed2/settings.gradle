@@ -1,0 +1,2 @@
+rootProject.name='Speed2'
+include ':app'
