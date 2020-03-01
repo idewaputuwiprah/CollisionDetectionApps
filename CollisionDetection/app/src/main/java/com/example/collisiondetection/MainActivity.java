@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView textX, textY, textZ;
     private Sensor accSensor;
     private SensorManager sManager;
-            DatabaseHelper db;
+    DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
