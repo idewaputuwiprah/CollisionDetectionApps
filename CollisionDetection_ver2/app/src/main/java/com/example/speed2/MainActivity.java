@@ -80,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 .withPermissions(Arrays.asList(
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.CALL_PHONE
                 ))
                 .withListener(new MultiplePermissionsListener() {
                     @Override
