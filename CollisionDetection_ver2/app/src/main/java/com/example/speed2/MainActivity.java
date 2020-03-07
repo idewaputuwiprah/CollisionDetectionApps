@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -26,20 +27,22 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    Button requestLocation, removeLocation;
+    Button requestLocation, removeLocation, input;
 
     MyBackgroundService mServices = null;
     boolean mBound = false;
 
     SensorService sensorService = null;
     boolean sBound = false;
-
-    TextView textX, textY, textZ;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -81,13 +84,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.CALL_PHONE
+                        Manifest.permission.CALL_PHONE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ))
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         requestLocation = findViewById(R.id.request_location_updates_button);
                         removeLocation = findViewById(R.id.remove_location_update_button);
+                        input = findViewById(R.id.push_data);
 
                         requestLocation.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -107,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         bindService(new Intent(MainActivity.this, MyBackgroundService.class),
                                 mServiceConnection,
                                 Context.BIND_AUTO_CREATE);
-                        bindService(new Intent(MainActivity.this, SensorService.class), sensorServiceConn, Context.BIND_AUTO_CREATE);
                     }
 
                     @Override
@@ -115,10 +119,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
                     }
                 }).check();
-
-        textX = findViewById(R.id.x);
-        textY = findViewById(R.id.y);
-        textZ = findViewById(R.id.z);
     }
 
     @Override
@@ -153,10 +153,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (isRequestEnable) {
             requestLocation.setEnabled(false);
             removeLocation.setEnabled(true);
+            input.setEnabled(true);
+
         }
         else {
             requestLocation.setEnabled(true);
             removeLocation.setEnabled(false);
+            input.setEnabled(false);
         }
     }
 
@@ -170,7 +173,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     .append("/")
                     .append(event.getLocation().getSpeed())
                     .toString();
-            Toast.makeText(mServices, data, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mServices, data, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void onClick(View v) {
+        bindService(new Intent(MainActivity.this, SensorService.class), sensorServiceConn, Context.BIND_AUTO_CREATE);
+    }
+
+    public void stop(View v) {
+        unbindService(sensorServiceConn);
     }
 }

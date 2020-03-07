@@ -3,4 +3,6 @@
     <string name="update_location">UPDATE LOCATION</string>
     <string name="remove_updates">REMOVE UPDATES</string>
     <string name="x">X</string>
+    <string name="input_data_set">INPUT DATA SET</string>
+    <string name="stop_input">STOP INPUT</string>
 </resources>

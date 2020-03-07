@@ -14,14 +14,16 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class SensorService extends Service implements SensorEventListener {
 
     private Sensor accSensor;
     private SensorManager sManager;
     private final IBinder sensorBinder = new SensorLocalBinder();
 
-    String[] accelerometer;
-    MainActivity activity;
+    WriteFile fileCtr = new WriteFile();
+    MyBackgroundService backgroundService = new MyBackgroundService();
 
     public SensorService() {
 
@@ -41,10 +43,17 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        accelerometer = new String[]{event.values[0]+"", event.values[1]+"", event.values[2]+""};
-        if (Double.parseDouble(accelerometer[1]) <= 5.0f) {
-//            onCall();
+        float spd = backgroundService.getSpeed();
+        String data = (event.values[0] + " " + event.values[1] + " " + event.values[2] + " " + spd + "\n");
+        try {
+            fileCtr.writeToFile(data);
         }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+//        if (Double.parseDouble(accelerometer[1]) <= 5.0f) {
+//            onCall();
+//        }
     }
 
     @SuppressLint("MissingPermission")
@@ -64,4 +73,5 @@ public class SensorService extends Service implements SensorEventListener {
             return SensorService.this;
         }
     }
+
 }
