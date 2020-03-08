@@ -38,7 +38,7 @@ public class MyBackgroundService extends Service {
     private static final String EXTRA_STARTED_FROM_NOTIFICATION = "com.example.speed2" + ".started_from_notification";
 
     private final IBinder mBinder = new LocalBinder();
-    private static final long UPDATE_INTERVAL_IN_MIL = 2000;
+    private static final long UPDATE_INTERVAL_IN_MIL = 20;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MUL = UPDATE_INTERVAL_IN_MIL/2;
     private static final int NOTI_ID = 1223;
     private boolean mChangingConfiguration = false;
