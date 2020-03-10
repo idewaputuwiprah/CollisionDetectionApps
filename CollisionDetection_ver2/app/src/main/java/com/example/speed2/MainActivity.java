@@ -3,18 +3,18 @@ package com.example.speed2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
@@ -27,9 +27,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +34,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     Button requestLocation, removeLocation, input;
+    Context context = this;
 
     MyBackgroundService mServices = null;
     boolean mBound = false;
@@ -44,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     SensorService sensorService = null;
     boolean sBound = false;
 
+    private ServiceToActivity locReceiver;
+    private String spd;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder iBinder) {
@@ -119,6 +119,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
                     }
                 }).check();
+
+        locReceiver = new ServiceToActivity();
+        IntentFilter intentFilterLoc = new IntentFilter("LocToActivityAction");
+        registerReceiver(locReceiver, intentFilterLoc);
     }
 
     @Override
@@ -178,10 +182,25 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     public void onClick(View v) {
-        bindService(new Intent(MainActivity.this, SensorService.class), sensorServiceConn, Context.BIND_AUTO_CREATE);
+        Intent intent = new Intent(this, SensorService.class);
+        intent.putExtra("SPEED", spd);
+        bindService(intent, sensorServiceConn, Context.BIND_AUTO_CREATE);
     }
 
     public void stop(View v) {
         unbindService(sensorServiceConn);
+    }
+
+    public class ServiceToActivity extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Bundle notificationData = intent.getExtras();
+            String speed = notificationData.getString("LocToActivityKey");
+            spd = speed;
+//            Toast.makeText(context, spd, Toast.LENGTH_SHORT).show();
+
+        }
     }
 }

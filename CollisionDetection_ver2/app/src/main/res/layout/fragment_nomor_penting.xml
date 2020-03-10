@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentNomorPenting">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="15dp">
+
+        <TextView
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="masukan nomor penting yang akan anda hubungi ketika dalam keadaan darurat"
+            android:textColor="#5153FF"
+            android:textStyle="bold"
+            android:fontFamily="@font/segoe_ui"/>
+
+        <EditText
+            android:id="@+id/nomor_penting"
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:paddingLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:drawableStart="@drawable/phone_call"
+            android:drawableLeft="@drawable/important_call"
+            android:drawablePadding="15dp"
+            android:hint="Nomor Penting"
+            android:textColorHint="#CFD2FC"
+            android:fontFamily="@font/segoe_ui"
+            android:background="@drawable/edit_text_without_line"
+            android:inputType="number"/>
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/round_button"
+            android:fontFamily="@font/segoe_ui_bold"
+            android:text="Save"
+            android:textColor="#FDFDFD"/>
+
+    </LinearLayout>
+
+</FrameLayout>

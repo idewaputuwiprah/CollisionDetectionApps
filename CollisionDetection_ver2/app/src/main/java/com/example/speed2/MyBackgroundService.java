@@ -49,7 +49,6 @@ public class MyBackgroundService extends Service {
     private LocationCallback locationCallback;
     private Handler mServicesHandler;
     private Location mLocation;
-    private float speed;
 
     public MyBackgroundService(){
 
@@ -138,7 +137,7 @@ public class MyBackgroundService extends Service {
     private void onNewLocation(Location lastLocation) {
         mLocation = lastLocation;
         EventBus.getDefault().postSticky(new SendLocationToActivity(mLocation));
-        speed = (mLocation.getSpeed() * 3.6f);
+        sendSensorToActivity((mLocation.getSpeed() * 3.6f)+"");
 
 //        UPDATE NOTIFICATION ID RUNNING AS FOREGROUND SERVICE
         if (serviceIsRunningInForeground(this)) {
@@ -226,7 +225,10 @@ public class MyBackgroundService extends Service {
         super.onDestroy();
     }
 
-    public float getSpeed() {
-        return speed;
+    private void sendSensorToActivity(String newData){
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("LocToActivityAction");
+        broadcastIntent.putExtra("LocToActivityKey", newData);
+        sendBroadcast(broadcastIntent);
     }
 }
