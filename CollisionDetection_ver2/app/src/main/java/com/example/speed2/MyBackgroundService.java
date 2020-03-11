@@ -17,6 +17,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,7 +89,6 @@ public class MyBackgroundService extends Service {
             removeLocationUpdate();
             stopSelf();
         }
-
         return START_NOT_STICKY;
     }
 
@@ -137,7 +137,7 @@ public class MyBackgroundService extends Service {
     private void onNewLocation(Location lastLocation) {
         mLocation = lastLocation;
         EventBus.getDefault().postSticky(new SendLocationToActivity(mLocation));
-        sendSensorToActivity((mLocation.getSpeed() * 3.6f)+"");
+//        sendSensorToActivity((mLocation.getSpeed() * 3.6f)+"");
 
 //        UPDATE NOTIFICATION ID RUNNING AS FOREGROUND SERVICE
         if (serviceIsRunningInForeground(this)) {
@@ -148,6 +148,7 @@ public class MyBackgroundService extends Service {
     private Notification getNotification() {
         Intent intent = new Intent(this, MyBackgroundService.class);
         String text = Common.getLocationText(mLocation);
+        sendSensorToActivity(text);
 
         intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION,true);
         PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

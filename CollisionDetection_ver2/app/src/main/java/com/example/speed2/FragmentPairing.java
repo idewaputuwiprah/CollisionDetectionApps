@@ -13,7 +13,7 @@ public class FragmentPairing extends Fragment {
     View view;
 
     public FragmentPairing() {
-        // Required empty public constructor
+
     }
 
     @Override

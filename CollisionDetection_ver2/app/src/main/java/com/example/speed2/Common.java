@@ -13,11 +13,11 @@ public class Common {
 
     public static String getLocationText(Location mLocation) {
         return mLocation == null ? "Unknown Location" : new StringBuilder()
-                .append(mLocation.getLatitude())
-                .append("/")
-                .append(mLocation.getLongitude())
-                .append("/")
-                .append(mLocation.getSpeed() * 3.6f)
+//                .append(mLocation.getLatitude())
+//                .append("/")
+//                .append(mLocation.getLongitude())
+//                .append("/")
+                .append(mLocation.getSpeed())
                 .toString();
     }
 

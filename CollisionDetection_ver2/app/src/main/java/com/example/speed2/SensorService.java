@@ -22,10 +22,13 @@ import java.io.IOException;
 public class SensorService extends Service implements SensorEventListener {
 
     private Sensor accSensor;
+    private Intent intentMain;
     private SensorManager sManager;
     private final IBinder sensorBinder = new SensorLocalBinder();
     private String spd;
     WriteFile fileCtr = new WriteFile();
+
+    private ActivityToService activityToService;
 
     public SensorService() {
 
@@ -36,11 +39,24 @@ public class SensorService extends Service implements SensorEventListener {
         sManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         accSensor = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sManager.registerListener(this, accSensor,SensorManager.SENSOR_DELAY_NORMAL);
+
+        activityToService = new ActivityToService();
+        IntentFilter intentFilterSpd = new IntentFilter("SPEED");
+        registerReceiver(activityToService, intentFilterSpd);
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Bundle getspeed = intent.getExtras();
+        spd = getspeed.getString("SPEED");
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        spd = intent.getStringExtra("SPEED");
+//        spd = intent.getStringExtra("SPEED");
+        intentMain = intent;
         return sensorBinder;
     }
 
@@ -83,4 +99,14 @@ public class SensorService extends Service implements SensorEventListener {
         }
     }
 
+    public class ActivityToService extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Bundle notificationData = intent.getExtras();
+            String speed = notificationData.getString("SPEED");
+            spd = speed;
+        }
+    }
 }

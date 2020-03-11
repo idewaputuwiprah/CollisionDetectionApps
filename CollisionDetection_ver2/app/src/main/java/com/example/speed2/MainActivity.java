@@ -1,6 +1,7 @@
 package com.example.speed2;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.speed2.database.DatabaseHelper;
+import com.google.android.material.tabs.TabLayout;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -27,7 +30,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,12 +37,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     Button requestLocation, removeLocation, input;
     Context context = this;
+    boolean klik = false;
 
     MyBackgroundService mServices = null;
     boolean mBound = false;
 
     SensorService sensorService = null;
     boolean sBound = false;
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     private ServiceToActivity locReceiver;
     private String spd;
@@ -78,6 +84,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tabLayout = findViewById(R.id.tablayout_id);
+        viewPager = findViewById(R.id.viewpager_id);
+        ViewPageAdapter adapter = new ViewPageAdapter(getSupportFragmentManager());
+
+        adapter.addFragment(new FragmentPairing(), "Pairing");
+        adapter.addFragment(new FragmentEditData(this), "Edit Data");
+        adapter.addFragment(new FragmentNomorPenting(), "Nomor Penting");
+
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
 
         Dexter.withActivity(this)
                 .withPermissions(Arrays.asList(
@@ -183,12 +200,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     public void onClick(View v) {
         Intent intent = new Intent(this, SensorService.class);
-        intent.putExtra("SPEED", spd);
+//        intent.putExtra("SPEED", spd);
         bindService(intent, sensorServiceConn, Context.BIND_AUTO_CREATE);
+        klik = true;
     }
 
     public void stop(View v) {
         unbindService(sensorServiceConn);
+        klik = false;
     }
 
     public class ServiceToActivity extends BroadcastReceiver
@@ -198,9 +217,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         {
             Bundle notificationData = intent.getExtras();
             String speed = notificationData.getString("LocToActivityKey");
-            spd = speed;
-//            Toast.makeText(context, spd, Toast.LENGTH_SHORT).show();
-
+//            spd = speed;
+//            Toast.makeText(context, speed, Toast.LENGTH_SHORT).show();
+            if (klik) {
+                sendSpeedToActivity(speed);
+            }
         }
+    }
+
+    private void sendSpeedToActivity(String newData){
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("SPEED");
+        broadcastIntent.putExtra("SPEED", newData);
+        sendBroadcast(broadcastIntent);
     }
 }
