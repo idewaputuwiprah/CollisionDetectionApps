@@ -2,6 +2,7 @@ package com.example.speed2;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+import com.example.speed2.database.DatabaseHelper;
+import com.example.speed2.database.model.User;
+import com.example.speed2.preferences.UserPref;
+
 import java.util.Calendar;
 
 public class FragmentEditData extends Fragment {
@@ -22,6 +28,7 @@ public class FragmentEditData extends Fragment {
     private Button saveBtn;
     private Context context;
     DatePickerDialog datePickerDialog;
+    DatabaseHelper db;
 
     View view;
 
@@ -36,6 +43,7 @@ public class FragmentEditData extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_edit_data, container, false);
+        db= new DatabaseHelper(view.getContext());
         date = view.findViewById(R.id.date);
         date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +65,16 @@ public class FragmentEditData extends Fragment {
         nama = view.findViewById(R.id.nama);
         add = view.findViewById(R.id.alamat);
         nomor_user = view.findViewById(R.id.nomor_user);
+
+        if(!new UserPref(view.getContext()).isUserLogedOut())
+        {
+            nik.setText(new UserPref(view.getContext()).getId());
+            nama.setText(new UserPref(view.getContext()).getNama());
+            add.setText(new UserPref(view.getContext()).getAlamat());
+            date.setText(new UserPref(view.getContext()).getTgl());
+            nomor_user.setText(new UserPref(view.getContext()).getNoHP());
+        }
+
         saveBtn = view.findViewById(R.id.save);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,9 +84,14 @@ public class FragmentEditData extends Fragment {
                 String tgl = date.getText().toString();
                 String alamat = add.getText().toString();
                 String no_user = nomor_user.getText().toString();
-                Toast.makeText(context, id + " " + name + " " + tgl + " " + alamat + " " + no_user + "\n", Toast.LENGTH_SHORT).show();
+//                db.insertData(id, name, tgl, alamat, no_user);
+                UserPref pref = new UserPref(view.getContext());
+                pref.saveLoginDetails(id,name,tgl,alamat,no_user);
+
+                Toast.makeText(context, "Data telah disimpan\n", Toast.LENGTH_SHORT).show();
             }
         });
         return view;
     }
+
 }
