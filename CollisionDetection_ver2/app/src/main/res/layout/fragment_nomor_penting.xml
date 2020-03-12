@@ -38,7 +38,7 @@
             android:inputType="number"/>
 
         <Button
-            android:id="@+id/save"
+            android:id="@+id/save_nomor"
             android:layout_width="150dp"
             android:layout_height="35dp"
             android:layout_gravity="center"

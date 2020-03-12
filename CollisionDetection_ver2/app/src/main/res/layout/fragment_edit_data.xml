@@ -103,7 +103,7 @@
             android:background="@drawable/round_button"
             android:fontFamily="@font/segoe_ui_bold"
             android:text="Save"
-            android:textColor="#FDFDFD"/>
+            android:textColor="#FDFDFD" />
 
     </LinearLayout>
 

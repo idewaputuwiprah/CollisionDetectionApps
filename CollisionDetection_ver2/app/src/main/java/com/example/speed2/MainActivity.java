@@ -1,6 +1,7 @@
 package com.example.speed2;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
@@ -16,6 +17,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.speed2.database.DatabaseHelper;
@@ -36,7 +38,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     Button requestLocation, removeLocation, input;
-    Context context = this;
+    EditText nik, nama, tanggal, alamat, nomor_user, nomor_darurat;
     boolean klik = false;
 
     MyBackgroundService mServices = null;
@@ -49,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private ViewPager viewPager;
 
     private ServiceToActivity locReceiver;
-    private String spd;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder iBinder) {
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         adapter.addFragment(new FragmentPairing(), "Pairing");
         adapter.addFragment(new FragmentEditData(this), "Edit Data");
-        adapter.addFragment(new FragmentNomorPenting(), "Nomor Penting");
+        adapter.addFragment(new FragmentNomorPenting(this), "Nomor Penting");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -140,6 +141,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         locReceiver = new ServiceToActivity();
         IntentFilter intentFilterLoc = new IntentFilter("LocToActivityAction");
         registerReceiver(locReceiver, intentFilterLoc);
+
+        nik = findViewById(R.id.NIK);
+        nama = findViewById(R.id.nama);
+        tanggal = findViewById(R.id.date);
+        alamat = findViewById(R.id.alamat);
+        nomor_user = findViewById(R.id.nomor_user);
+        nomor_darurat = findViewById(R.id.nomor_penting);
     }
 
     @Override
