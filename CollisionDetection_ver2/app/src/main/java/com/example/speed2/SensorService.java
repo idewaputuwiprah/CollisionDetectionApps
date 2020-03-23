@@ -67,7 +67,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        String data = (event.values[0] + " " + event.values[1] + " " + event.values[2] + " " + spd + "\n");
+        String data = (event.values[0] + " " + event.values[1] + " " + event.values[2] + " " + spd + " " + "0" +"\n");
 //        Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
 //        sendMessageToActivity(data);
         try {
